@@ -1,14 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
+import { Subject } from 'rxjs';
 import { deleteTodo, saveOrUpdateTodo } from './store/todo.actions';
+import { selectTodos } from './store/todo.selectors';
 import { Todo } from './todo.model';
+import {filter, takeUntil} from 'rxjs/operators';
 
 @Component({
   selector: 'app-todo',
   templateUrl: './todo.component.html',
   styleUrls: ['./todo.component.scss']
 })
+
 export class TodoComponent implements OnInit {
 
   todos: Todo[] = [];
@@ -18,27 +22,30 @@ export class TodoComponent implements OnInit {
   constructor(private readonly store: Store) {
 
   }
-
+  
+  private unsubscribe = new Subject<void>();
+  
   ngOnInit(): void {
-    this.todos = [
-      {id: 1, description: 'Buy milk', done: true},
-      {id: 2, description: 'Learn RxJS', done: false},
-      {id: 3, description: 'Learn Angular', done: true},
-      {id: 4, description: 'Learn NgRx', done: false},
-      {id: 5, description: 'Learn Angular animation', done: true},
-    ];
+    this.store.pipe(
+      select(selectTodos),
+      filter(state => state.length > 0),
+      takeUntil(this.unsubscribe)
+    ).subscribe(todos => {
+      this.todos = todos;
+    });
   }
+
   undoOrCompleteTodo(item: Todo) {
-    this.todos = this.todos.map(todo => todo.id === item.id ? {...todo, done: !todo.done} : todo);
-    const todo: Todo = {...item, done: !item.done};
-    this.store.dispatch(saveOrUpdateTodo({todo, isUpdate: true}));
+    // this.todos = this.todos.map(todo => todo.id === item.id ? {...todo, done: !todo.done} : todo);
+    // const todo: Todo = {...item, done: !item.done};
+    this.store.dispatch(saveOrUpdateTodo({todo:item, isUpdate: true}));
   }
 
   deleteTodo(id: number) {
-    const todo = this.todos.find(todo => todo.id === id);
-    if (todo) {
-      this.todos.splice(this.todos.indexOf(todo), 1);
-    }
+    // const todo = this.todos.find(todo => todo.id === id);
+    // if (todo) {
+    //   this.todos.splice(this.todos.indexOf(todo), 1);
+    // }
     this.store.dispatch(deleteTodo({todoId : id}));
   }
 
@@ -49,9 +56,14 @@ export class TodoComponent implements OnInit {
         description: this.todoDescriptionFormControl.value ?? '',
         done: false
       }
-      this.todos.push(todo);
+      // this.todos.push(todo);
       this.store.dispatch(saveOrUpdateTodo({todo, isUpdate: false}));
     }
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 
 }
