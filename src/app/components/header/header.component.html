@@ -1,0 +1,14 @@
+<mat-toolbar>
+    <span>NgRx Workshop</span>
+    <button mat-button color="primary" routerLink="" routerLinkActive="green" [routerLinkActiveOptions]="{exact: true}">Void</button>
+    <button mat-button color="primary" routerLink="/todo" routerLinkActive="green">Todo</button>
+    <span class="spacer"></span>
+
+    <button *ngIf="!isLoggedIn" (click)="login(true)" mat-icon-button aria-label="login">
+        <mat-icon>login</mat-icon>Login
+      </button>
+      <button *ngIf="isLoggedIn" (click)="logout(false)" mat-icon-button aria-label="logout">
+        <mat-icon>logout</mat-icon>Logout
+      </button>
+
+</mat-toolbar>

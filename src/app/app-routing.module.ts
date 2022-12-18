@@ -1,10 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { TodoComponent } from './forms/todo/todo.component';
+import { TodoModule } from './forms/todo/todo.module';
+import { AuthGuard } from './guards/auth.guard';
+import { VoidComponent } from './void/void.component';
 
 const routes: Routes = [
-  {path:'',redirectTo:'todo',pathMatch:'full'},
-  {path:'todo',component:TodoComponent}
+  {path:'',component: VoidComponent},
+  {path:'todo', 
+  loadChildren:()=> import('./forms/todo/todo.module').then(m => m.TodoModule),
+  canActivate: [AuthGuard]
+  }
+  //{path:'todo',component:TodoComponent}
+  
 ];
 
 @NgModule({
