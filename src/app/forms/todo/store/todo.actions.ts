@@ -10,3 +10,10 @@ export const deleteTodo = createAction(
     '[Todo Component] Delete Todo',
     props<{todoId : number}>()
 )
+
+export const setTodos = createAction(
+  '[Todo Component] Set Todos',
+  props<{todos: Todo[]}>()
+);
+
+export const fetchTodos = createAction('[Todo Component] Fetch Todos');

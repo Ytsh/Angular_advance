@@ -2,7 +2,8 @@ import { Component } from "@angular/core";
 
 @Component({
     selector: 'app-void',
-    template: '',
+    templateUrl: './home.component.html',
   })
-  export class VoidComponent {
+  export class HomeComponent {
+    
   }

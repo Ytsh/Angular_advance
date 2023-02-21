@@ -8,16 +8,22 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { HeaderModule } from "./components/header/header.module";
 // import { HeaderComponent } from './components/header/header.component';
-import { VoidComponent } from './void/void.component';
+import { HomeComponent } from './home/home.component';
 import { EffectsModule } from '@ngrx/effects';
 import { userReducer } from './user-preference/user.reducer';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AppHttpInterceptor } from './app-http-interceptor';
 
+export const httpInterceptorProviders = [
+    { provide: HTTP_INTERCEPTORS, useClass: AppHttpInterceptor, multi: true },
+  ];
+  
 @NgModule({
     declarations: [
         AppComponent,
-        VoidComponent,
+        HomeComponent,
     ],
-    providers: [],
+    providers: [httpInterceptorProviders],
     bootstrap: [AppComponent],
     imports: [
         BrowserModule,

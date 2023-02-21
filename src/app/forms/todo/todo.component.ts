@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
-import { deleteTodo, saveOrUpdateTodo } from './store/todo.actions';
+import { deleteTodo, saveOrUpdateTodo,fetchTodos } from './store/todo.actions';
 import { selectTodos } from './store/todo.selectors';
 import { Todo } from './todo.model';
 import {filter, takeUntil} from 'rxjs/operators';
@@ -26,6 +26,7 @@ export class TodoComponent implements OnInit {
   private unsubscribe = new Subject<void>();
   
   ngOnInit(): void {
+    this.store.dispatch(fetchTodos());
     this.store.pipe(
       select(selectTodos),
       filter(state => state.length > 0),
